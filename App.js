@@ -19,7 +19,6 @@ const Title = styled.Text`
 const Moldura = styled.View`
   width: 100px;
   height: 40px;
-  background-color: red;
   border-radius: 4px;
 `;
 
