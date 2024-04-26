@@ -1,9 +1,0 @@
-{
-  "background_color": "#ffffff",
-  "display": "standalone",
-  "lang": "en",
-  "name": "abel-s-auth",
-  "short_name": "abel-s-auth",
-  "start_url": "/?utm_source=web_app_manifest",
-  "orientation": "portrait"
-}
