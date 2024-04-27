@@ -1,35 +1,18 @@
 {
-  "name": "abel-s-auth",
+  "name": "abel-s-secret-link-front",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "server.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "build:web": "npx expo export:web"
+    "start": "export NODE_ENV=Production && node server.js"
   },
   "engines": {
     "node": "18.x",
     "yarn": "1.22.x"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~3.1.3",
-    "@expo/webpack-config": "~19.0.1",
-    "@react-native-clipboard/clipboard": "1.11.2",
-    "expo": "~50.0.14",
-    "expo-status-bar": "~1.11.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.73.6",
-    "react-native-web": "~0.19.6",
-    "styled-components": "^6.1.8"
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "path": "^0.12.7"
   },
-  "devDependencies": {
-    "@babel/core": "^7.20.0"
-  },
-  "private": true,
-  "resolutions": {
-    "**/nanoid": "3.3.5"
-  }
+  "private": false
 }
