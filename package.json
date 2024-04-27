@@ -1,5 +1,5 @@
 {
-  "name": "abel-s-auth",
+  "name": "abel-s-secret-link-front",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -10,13 +10,14 @@
     "build:web": "npx expo export:web"
   },
   "engines": {
-    "node": "18.x",
+    "node": "20.x",
     "yarn": "1.22.x"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.1.3",
     "@expo/webpack-config": "~19.0.1",
     "@react-native-clipboard/clipboard": "1.11.2",
+    "axios": "^1.6.8",
     "expo": "~50.0.14",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Alert, Button, TouchableOpacity, ImageBackground, StyleSheet, Clipboard } from 'react-native';
 import styled from 'styled-components/native';
+import axios from 'axios';
 
 const Container = styled.View`
   flex: 1;
@@ -98,32 +99,26 @@ const image = { uri: 'https://img.freepik.com/vetores-gratis/abstratos-tecnologi
 const App = () => {
   const [url, setUrl] = useState('');
   const [senha, setSenha] = useState('');
-  const [deletavel, setDeletavel] = useState(false);
-  const [numeroExibicoes, setNumeroExibicoes] = useState(1);
+  const [auto_delete, setDeletavel] = useState(false);
+  const [numero_exibicao, setNumeroExibicoes] = useState(1);
 
   const handleURLChange = (text) => {
     setUrl(text);
   };
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch('https://exemplo.com/api/endpoint', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url, senha })
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao enviar os dados');
-      }
-
-      Clipboard.setString('hello world');
+  const handleSubmit = () => {
+    axios.post('https://abel-s-secret-link-4966f322aa8c.herokuapp.com/encrypt', {
+      url,
+      senha,
+      auto_delete,
+      numero_exibicao
+    }).then(response => {
+      Clipboard.setString(response.id);
       Alert.alert('Sucesso', 'Link encurtado copiado');
-    } catch (error) {
-      Alert.alert('Erro', 'Ocorreu um erro ao enviar os dados. Por favor, tente novamente.');
-    }
+    })
+      .catch(error => {
+        console.error('There was a problem with your Axios request:', error);
+      });
   };
 
   const handleSenhaChange = (text) => {
@@ -131,14 +126,14 @@ const App = () => {
   };
 
   const handleDeletavelChange = () => {
-    setDeletavel(!deletavel);
+    setDeletavel(!auto_delete);
   };
 
   const handleNumeroExibicoesChange = (action) => {
     if (action === 'increment') {
-      setNumeroExibicoes(numeroExibicoes + 1);
+      setNumeroExibicoes(numero_exibicao + 1);
     } else {
-      setNumeroExibicoes(numeroExibicoes > 1 ? numeroExibicoes - 1 : 1);
+      setNumeroExibicoes(numero_exibicao > 1 ? numero_exibicao - 1 : 1);
     }
   };
 
@@ -167,14 +162,14 @@ const App = () => {
 
           <InputContainer>
             <TouchableOpacity onPress={handleDeletavelChange}>
-              <CheckboxContainer isChecked={deletavel}>
-                {deletavel && <CheckboxText isChecked={deletavel}>✓</CheckboxText>}
+              <CheckboxContainer isChecked={auto_delete}>
+                {auto_delete && <CheckboxText isChecked={auto_delete}>✓</CheckboxText>}
               </CheckboxContainer>
             </TouchableOpacity>
             <InputLabel> Auto Deletar</InputLabel>
           </InputContainer>
 
-          {deletavel && (
+          {auto_delete && (
             <InputContainer>
               <View style={{ marginBottom: 20 }} />
               <IncrementButton onPress={() => handleNumeroExibicoesChange('decrement')}>
@@ -183,7 +178,7 @@ const App = () => {
               <StyledInput2
                 placeholder="Número de visualizações"
                 editable={false}
-                value={numeroExibicoes.toString()}
+                value={numero_exibicao.toString()}
               />
               <IncrementButton onPress={() => handleNumeroExibicoesChange('increment')}>
                 <ButtonText>+</ButtonText>
