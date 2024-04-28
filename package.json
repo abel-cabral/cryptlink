@@ -1,6 +1,6 @@
 {
-  "name": "abel-s-secret-link-front",
-  "version": "1.0.0",
+  "name": "cryptlink",
+  "version": "1.0.1",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
