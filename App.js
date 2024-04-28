@@ -141,7 +141,7 @@ const App = () => {
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         <Container>
-          <Title>Abel's Short Link</Title>
+          <Title>Cryptlink</Title>
 
           <InputContainer>
             <StyledInput
