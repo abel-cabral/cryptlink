@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 const image = require('./assets/fundo.jpg');
 
 const Criptografar = () => {
-  const api = 'https://cryptlink-api.abelcode.dev';
+  const api = 'https://cryptlink-api.abelcode.dev/';
   const [url, setUrl] = useState('');
   const [senha, setSenha] = useState('');
   const [auto_delete, setDeletavel] = useState(false);
@@ -131,7 +131,7 @@ const Criptografar = () => {
         setNumeroExibicoes(0);
 
         // Prepara dados para nova tela
-        setLink(response.data.url);
+        setLink(api + response.data.id);
         setExibirCopiar(true);
       })
       .catch((error) => {
