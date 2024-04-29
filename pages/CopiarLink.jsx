@@ -1,43 +1,53 @@
-import React, { useState } from 'react';
-import { View, Text, Clipboard, StyleSheet, Platform } from 'react-native';
-import { Button } from 'react-native-web';
+import React, { useState } from "react";
+import { View, Text, Clipboard, StyleSheet, Platform } from "react-native";
+import { Button } from "react-native-web";
 
 const CopiarLink = ({ link, func }) => {
   const [exibirVoltar, setExibirVoltar] = useState(false);
-  
+
   const copyToClipboard = () => {
-    if (Platform.OS === 'web') {
-      copiarUrl('copy');
-      setExibirVoltar(true);
+    setExibirVoltar(true);
+    if (Platform.OS === "web") {
+      copiarUrl("copy");
     } else {
       Clipboard.setString(link);
-      Alert.alert('Sucesso', 'Link copiado para a área de transferência!');
+      Alert.alert("Sucesso", "Link copiado para a área de transferência!");
     }
   };
 
   const voltar = () => {
     setExibirVoltar(false);
     func();
-  }
+  };
 
   const copiarUrl = (id) => {
-    const r = document.createRange();
-    r.selectNode(document.getElementById(id));
+    const element = document.getElementById(id);
+    if (!element) {
+      alert("Elemento não encontrado!");
+      return;
+    }
+
+    const textoSemEspacos = element.innerText.trim().replace(/\s+/g, " ");
+
+    const range = document.createRange();
+    range.selectNode(element);
+
     window.getSelection().removeAllRanges();
-    window.getSelection().addRange(r);
+    window.getSelection().addRange(range);
+
     try {
-      document.execCommand('copy');
+      document.execCommand("copy");
       window.getSelection().removeAllRanges();
-      alert('Link copiado para a área de transferência!');
+      alert("Link copiado para a área de transferência!");
     } catch (err) {
-      alert('Não foi possível copiar!');
+      alert("Não foi possível copiar!");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} id='copy'>
-        <a href={link} style={{ textDecorationLine: 'none', color: '#333' }}>
+      <Text style={styles.text} id="copy">
+        <a href={link} style={{ textDecorationLine: "none", color: "#333" }}>
           {link}
         </a>
       </Text>
@@ -45,18 +55,18 @@ const CopiarLink = ({ link, func }) => {
       <View style={styles.buttonContainer}>
         {exibirVoltar && (
           <Button
-            title='Voltar'
-            color='orange'
+            title="Voltar"
+            color="orange"
             onPress={voltar}
             style={styles.button}
           />
         )}
         &nbsp;&nbsp;
         <Button
-          title='Copiar Link'
+          title="Copiar Link"
           onPress={copyToClipboard}
           style={styles.button}
-          color='green'
+          color="green"
         />
       </View>
     </View>
@@ -66,31 +76,31 @@ const CopiarLink = ({ link, func }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000000c0',
-    color: '#f2f2f2',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000000c0",
+    color: "#f2f2f2",
     paddingHorizontal: 20,
   },
   text: {
-    backgroundColor: '#f2f2f2f3',
-    padding: '40px',
+    backgroundColor: "#f2f2f2f3",
+    padding: "40px",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 24,
-    width: '100%',
-    fontSize: '1.2em',
+    width: "100%",
+    fontSize: "1.2em",
   },
   link: {
-    flexWrap: 'wrap',
-    width: '180%',
+    flexWrap: "wrap",
+    width: "180%",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   button: {
-    margin: '125px',
+    margin: "125px",
   },
 });
 

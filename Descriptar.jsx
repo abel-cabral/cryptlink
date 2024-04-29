@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Platform,
@@ -6,9 +6,9 @@ import {
   StyleSheet,
   Linking,
   Clipboard,
-} from 'react-native';
-import styled from 'styled-components/native';
-import axios from 'axios';
+} from "react-native";
+import styled from "styled-components/native";
+import axios from "axios";
 
 const Container = styled.View`
   flex: 1;
@@ -50,50 +50,50 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    color: 'white',
+    color: "white",
     fontSize: 42,
     lineHeight: 84,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    backgroundColor: '#000000c0',
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "#000000c0",
   },
 });
 
 const Descriptar = () => {
-  const api = 'https://cryptlink-api.abelcode.dev';
+  const api = "https://cryptlink-api.abelcode.dev";
   const path = window.location.pathname;
-  const [link_publico, setUrl] = useState(path.replace('/', ''));
-  const [senha, setSenha] = useState('');
+  const [link_publico, setUrl] = useState(path.replace("/", ""));
+  const [senha, setSenha] = useState("");
 
   const handleSubmit = () => {
     axios
-      .post(api + '/decrypt', {
+      .post(api + "/decrypt", {
         link_publico,
         senha,
       })
       .then((response) => {
-        if (Platform.OS === 'web') {
+        if (Platform.OS === "web") {
           window.location.href = response.data.url;
         } else {
           Linking.openURL(response.url).catch((err) =>
-            console.error('Erro ao abrir o link:', err)
+            console.error("Erro ao abrir o link:", err)
           );
         }
       })
       .catch((error) => {
-        setSenha('');
-        if (Platform.OS === 'web') {
+        setSenha("");
+        if (Platform.OS === "web") {
           alert(
             error.response.data.message
-              ? error.response.data.message + '. Verifique link | senha'
-              : 'Erro desconhecido. Verifique link | senha'
+              ? error.response.data.message + ". Verifique link | senha"
+              : "Erro desconhecido. Verifique link | senha"
           );
         } else {
           Alert.alert(
-            'Error',
+            "Error",
             error.response.data.message
-              ? error.response.data.message + '. Verifique link | senha'
-              : 'Erro desconhecido. Verifique link | senha'
+              ? error.response.data.message + ". Verifique link | senha"
+              : "Erro desconhecido. Verifique link | senha"
           );
         }
       });
@@ -105,25 +105,21 @@ const Descriptar = () => {
 
   return (
     <View style={styles.container}>
-        <Container>
-          <Title>Cryptlink</Title>
-          <InputContainer>
-            <StyledInput
-              placeholder='senha para decodificar link'
-              placeholderTextColor='#c0c0c0'
-              secureTextEntry={true}
-              value={senha}
-              onChangeText={handleSenhaChange}
-            />
-          </InputContainer>
-          <Moldura>
-            <Button
-              title='Descriptar'
-              disabled={!senha}
-              onPress={handleSubmit}
-            />
-          </Moldura>
-        </Container>
+      <Container>
+        <Title>Cryptlink</Title>
+        <InputContainer>
+          <StyledInput
+            placeholder="senha para decodificar link"
+            placeholderTextColor="#c0c0c0"
+            secureTextEntry={true}
+            value={senha}
+            onChangeText={handleSenhaChange}
+          />
+        </InputContainer>
+        <Moldura>
+          <Button title="Descriptar" disabled={!senha} onPress={handleSubmit} />
+        </Moldura>
+      </Container>
     </View>
   );
 };

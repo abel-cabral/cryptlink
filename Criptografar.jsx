@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Button,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import styled from 'styled-components/native';
-import axios from 'axios';
-import CopiarLink from './pages/CopiarLink';
+import React, { useState } from "react";
+import { View, Button, TouchableOpacity, StyleSheet } from "react-native";
+import styled from "styled-components/native";
+import axios from "axios";
+import CopiarLink from "./pages/CopiarLink";
 
 const Container = styled.View`
   flex: 1;
@@ -66,11 +61,11 @@ const CheckboxContainer = styled.View`
   border-radius: 3px;
   justify-content: center;
   align-items: center;
-  background-color: ${({ isChecked }) => (isChecked ? '#007bff' : '#fff')};
+  background-color: ${({ isChecked }) => (isChecked ? "#007bff" : "#fff")};
 `;
 
 const CheckboxText = styled.Text`
-  color: ${({ isChecked }) => (isChecked ? '#fff' : '#000')};
+  color: ${({ isChecked }) => (isChecked ? "#fff" : "#000")};
 `;
 
 const IncrementButton = styled.TouchableOpacity`
@@ -88,38 +83,40 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   text: {
-    color: 'white',
+    color: "white",
     fontSize: 42,
     lineHeight: 84,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    backgroundColor: '#000000c0',
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "#000000c0",
   },
 });
 
-const image = require('./assets/fundo.jpg');
+const image = require("./assets/fundo.jpg");
 
 const Criptografar = () => {
-  const api = 'https://cryptlink-api.abelcode.dev';
-  const host = 'https://cryptlink.abelcode.dev/';
+  const api = "https://cryptlink-api.abelcode.dev";
+  const host = "https://cryptlink.abelcode.dev/";
 
-  const [url, setUrl] = useState('');
-  const [senha, setSenha] = useState('');
+  const [url, setUrl] = useState("");
+  const [senha, setSenha] = useState("");
   const [auto_delete, setDeletavel] = useState(false);
   const [numero_exibicao, setNumeroExibicoes] = useState(1);
-  const [link, setLink] = useState('');
+  const [link, setLink] = useState("");
   const [exibirCopiar, setExibirCopiar] = useState(false);
+  const [blockBtn, setBlockBtn] = useState(false);
 
   const handleURLChange = (text) => {
     setUrl(text);
   };
 
   const handleSubmit = () => {
+    setBlockBtn(true);
     axios
-      .post(api + '/encrypt', {
+      .post(api + "/encrypt", {
         url,
         senha,
         auto_delete,
@@ -127,18 +124,24 @@ const Criptografar = () => {
       })
       .then((response) => {
         // Limpa formulario
-        setUrl('');
-        setSenha('');
+        setUrl("");
+        setSenha("");
         setDeletavel(false);
         setNumeroExibicoes(0);
+        setBlockBtn(false);
 
         // Prepara dados para nova tela
         setLink(host + response.data.id);
         setExibirCopiar(true);
       })
       .catch((error) => {
+        setBlockBtn(false);
         console.log(error);
-        alert(error.message);
+        alert(
+          error.response.data.message
+            ? error.response.data.message
+            : "Erro desconhecido."
+        );
       });
   };
 
@@ -147,16 +150,16 @@ const Criptografar = () => {
   };
 
   const esconderCopiar = () => {
-    setLink('');
+    setLink("");
     setExibirCopiar(false);
-  }
+  };
 
   const handleDeletavelChange = () => {
     setDeletavel(!auto_delete);
   };
 
   const handleNumeroExibicoesChange = (action) => {
-    if (action === 'increment') {
+    if (action === "increment") {
       setNumeroExibicoes(numero_exibicao + 1);
     } else {
       setNumeroExibicoes(numero_exibicao > 1 ? numero_exibicao - 1 : 1);
@@ -165,13 +168,14 @@ const Criptografar = () => {
 
   return (
     <View style={styles.container}>
-        {!exibirCopiar && (<Container>
+      {!exibirCopiar && (
+        <Container>
           <Title>Cryptlink</Title>
 
           <InputContainer>
             <StyledInput
-              placeholder='www.google.com'
-              placeholderTextColor='#c0c0c0'
+              placeholder="www.google.com"
+              placeholderTextColor="#c0c0c0"
               value={url}
               onChangeText={handleURLChange}
             />
@@ -179,8 +183,8 @@ const Criptografar = () => {
 
           <InputContainer>
             <StyledInput
-              placeholder='abel123'
-              placeholderTextColor='#c0c0c0'
+              placeholder="abel123"
+              placeholderTextColor="#c0c0c0"
               secureTextEntry={true}
               value={senha}
               onChangeText={handleSenhaChange}
@@ -196,40 +200,40 @@ const Criptografar = () => {
               </CheckboxContainer>
             </TouchableOpacity>
             <InputLabel> Auto Deletar</InputLabel>
-            
+
             {auto_delete && (
               <InputContainer style={{ paddingTop: 20 }}>
                 <View style={{ marginBottom: 20 }} />
                 <IncrementButton
-                  onPress={() => handleNumeroExibicoesChange('decrement')}
+                  onPress={() => handleNumeroExibicoesChange("decrement")}
                 >
                   <ButtonText>-</ButtonText>
                 </IncrementButton>
                 <StyledInput2
-                  placeholder='Número de visualizações'
+                  placeholder="Número de visualizações"
                   editable={false}
                   value={numero_exibicao.toString()}
                 />
                 <IncrementButton
-                  onPress={() => handleNumeroExibicoesChange('increment')}
+                  onPress={() => handleNumeroExibicoesChange("increment")}
                 >
                   <ButtonText>+</ButtonText>
                 </IncrementButton>
               </InputContainer>
             )}
-
           </InputContainer>
 
           <Moldura>
             <Button
-              title='Encriptar'
-              disabled={!url || !senha}
+              title="Encriptar"
+              disabled={!url || !senha || blockBtn}
               onPress={handleSubmit}
             />
           </Moldura>
-        </Container>)}
+        </Container>
+      )}
 
-      { exibirCopiar &&(<CopiarLink link={link} func={esconderCopiar} />)}
+      {exibirCopiar && <CopiarLink link={link} func={esconderCopiar} />}
     </View>
   );
 };
