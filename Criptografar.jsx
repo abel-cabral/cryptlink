@@ -221,7 +221,7 @@ const Criptografar = () => {
           <Moldura>
             <Button
               title='Encriptar'
-              disabled={!url && !senha}
+              disabled={!url || !senha}
               onPress={handleSubmit}
             />
           </Moldura>
