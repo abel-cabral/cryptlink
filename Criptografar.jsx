@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { View, Alert, Button, TouchableOpacity, ImageBackground, StyleSheet, Clipboard } from 'react-native';
+import {
+  View,
+  Button,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
+import CopiarLink from './pages/CopiarLink';
 
 const Container = styled.View`
   flex: 1;
@@ -60,11 +66,11 @@ const CheckboxContainer = styled.View`
   border-radius: 3px;
   justify-content: center;
   align-items: center;
-  background-color: ${({ isChecked }) => isChecked ? '#007bff' : '#fff'};
+  background-color: ${({ isChecked }) => (isChecked ? '#007bff' : '#fff')};
 `;
 
 const CheckboxText = styled.Text`
-  color: ${({ isChecked }) => isChecked ? '#fff' : '#000'};
+  color: ${({ isChecked }) => (isChecked ? '#fff' : '#000')};
 `;
 
 const IncrementButton = styled.TouchableOpacity`
@@ -77,128 +83,153 @@ const ButtonText = styled.Text`
 `;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    image: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    text: {
-        color: 'white',
-        fontSize: 42,
-        lineHeight: 84,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        backgroundColor: '#000000c0',
-    },
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  text: {
+    color: 'white',
+    fontSize: 42,
+    lineHeight: 84,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: '#000000c0',
+  },
 });
 
-const image = require("./assets/fundo.jpg")
+const image = require('./assets/fundo.jpg');
 
 const Criptografar = () => {
-    const api = "https://cryptlink-api.abelcode.dev";
-    const [url, setUrl] = useState('');
-    const [senha, setSenha] = useState('');
-    const [auto_delete, setDeletavel] = useState(false);
-    const [numero_exibicao, setNumeroExibicoes] = useState(1);
+  const api = 'https://cryptlink-api.abelcode.dev';
+  const [url, setUrl] = useState('');
+  const [senha, setSenha] = useState('');
+  const [auto_delete, setDeletavel] = useState(false);
+  const [numero_exibicao, setNumeroExibicoes] = useState(1);
+  const [link, setLink] = useState('');
+  const [exibirCopiar, setExibirCopiar] = useState(false);
 
-    const handleURLChange = (text) => {
-        setUrl(text);
-    };
+  const handleURLChange = (text) => {
+    setUrl(text);
+  };
 
-    const handleSubmit = () => {
-        axios.post(api + '/encrypt', {
-            url,
-            senha,
-            auto_delete,
-            numero_exibicao
-        }).then(response => {
-            Clipboard.setString(response.id);
-            Alert.alert('Sucesso', 'Link encurtado copiado');
-        })
-            .catch(error => {
-                console.error('There was a problem with your Axios request:', error);
-            });
-    };
+  const handleSubmit = () => {
+    axios
+      .post(api + '/encrypt', {
+        url,
+        senha,
+        auto_delete,
+        numero_exibicao,
+      })
+      .then((response) => {
+        // Limpa formulario
+        setUrl('');
+        setSenha('');
+        setDeletavel(false);
+        setNumeroExibicoes(0);
 
-    const handleSenhaChange = (text) => {
-        setSenha(text);
-    };
+        // Prepara dados para nova tela
+        setLink(response.data.url);
+        setExibirCopiar(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.message);
+      });
+  };
 
-    const handleDeletavelChange = () => {
-        setDeletavel(!auto_delete);
-    };
+  const handleSenhaChange = (text) => {
+    setSenha(text);
+  };
 
-    const handleNumeroExibicoesChange = (action) => {
-        if (action === 'increment') {
-            setNumeroExibicoes(numero_exibicao + 1);
-        } else {
-            setNumeroExibicoes(numero_exibicao > 1 ? numero_exibicao - 1 : 1);
-        }
-    };
+  const esconderCopiar = () => {
+    setLink('');
+    setExibirCopiar(false);
+  }
 
-    return (
-        <View style={styles.container}>
-            <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-                <Container>
-                    <Title>Cryptlink</Title>
+  const handleDeletavelChange = () => {
+    setDeletavel(!auto_delete);
+  };
 
-                    <InputContainer>
-                        <StyledInput
-                            placeholder="ex: www.google.com"
-                            value={url}
-                            onChangeText={handleURLChange}
-                        />
-                    </InputContainer>
+  const handleNumeroExibicoesChange = (action) => {
+    if (action === 'increment') {
+      setNumeroExibicoes(numero_exibicao + 1);
+    } else {
+      setNumeroExibicoes(numero_exibicao > 1 ? numero_exibicao - 1 : 1);
+    }
+  };
 
-                    <InputContainer>
-                        <StyledInput
-                            placeholder="ex: 123"
-                            secureTextEntry={true}
-                            value={senha}
-                            onChangeText={handleSenhaChange}
-                        />
-                    </InputContainer>
+  return (
+    <View style={styles.container}>
+        {!exibirCopiar && (<Container>
+          <Title>Cryptlink</Title>
 
-                    <InputContainer>
-                        <TouchableOpacity onPress={handleDeletavelChange}>
-                            <CheckboxContainer isChecked={auto_delete}>
-                                {auto_delete && <CheckboxText isChecked={auto_delete}>✓</CheckboxText>}
-                            </CheckboxContainer>
-                        </TouchableOpacity>
-                        <InputLabel> Auto Deletar</InputLabel>
-                    </InputContainer>
+          <InputContainer>
+            <StyledInput
+              placeholder='www.google.com'
+              placeholderTextColor='#c0c0c0'
+              value={url}
+              onChangeText={handleURLChange}
+            />
+          </InputContainer>
 
-                    {auto_delete && (
-                        <InputContainer>
-                            <View style={{ marginBottom: 20 }} />
-                            <IncrementButton onPress={() => handleNumeroExibicoesChange('decrement')}>
-                                <ButtonText>-</ButtonText>
-                            </IncrementButton>
-                            <StyledInput2
-                                placeholder="Número de visualizações"
-                                editable={false}
-                                value={numero_exibicao.toString()}
-                            />
-                            <IncrementButton onPress={() => handleNumeroExibicoesChange('increment')}>
-                                <ButtonText>+</ButtonText>
-                            </IncrementButton>
-                        </InputContainer>
-                    )}
+          <InputContainer>
+            <StyledInput
+              placeholder='abel123'
+              placeholderTextColor='#c0c0c0'
+              secureTextEntry={true}
+              value={senha}
+              onChangeText={handleSenhaChange}
+            />
+          </InputContainer>
 
-                    <Moldura>
-                        <Button
-                            title="Encriptar"
-                            disabled={(!url) && (!senha)}
-                            onPress={handleSubmit}
-                        />
-                    </Moldura>
+          <InputContainer>
+            <TouchableOpacity onPress={handleDeletavelChange}>
+              <CheckboxContainer isChecked={auto_delete}>
+                {auto_delete && (
+                  <CheckboxText isChecked={auto_delete}>✓</CheckboxText>
+                )}
+              </CheckboxContainer>
+            </TouchableOpacity>
+            <InputLabel> Auto Deletar</InputLabel>
+            
+            {auto_delete && (
+              <InputContainer style={{ paddingTop: 20 }}>
+                <View style={{ marginBottom: 20 }} />
+                <IncrementButton
+                  onPress={() => handleNumeroExibicoesChange('decrement')}
+                >
+                  <ButtonText>-</ButtonText>
+                </IncrementButton>
+                <StyledInput2
+                  placeholder='Número de visualizações'
+                  editable={false}
+                  value={numero_exibicao.toString()}
+                />
+                <IncrementButton
+                  onPress={() => handleNumeroExibicoesChange('increment')}
+                >
+                  <ButtonText>+</ButtonText>
+                </IncrementButton>
+              </InputContainer>
+            )}
 
-                </Container>
-            </ImageBackground>
-        </View>
-    );
+          </InputContainer>
+
+          <Moldura>
+            <Button
+              title='Encriptar'
+              disabled={!url && !senha}
+              onPress={handleSubmit}
+            />
+          </Moldura>
+        </Container>)}
+
+      { exibirCopiar &&(<CopiarLink link={link} func={esconderCopiar} />)}
+    </View>
+  );
 };
 
 export default Criptografar;
