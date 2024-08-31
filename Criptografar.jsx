@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
 const image = require("./assets/fundo.jpg");
 
 const Criptografar = () => {
-  const api = "https://api.cryptlink.abelcode.dev";
+  const api = "https://cryptlink-api.abelcode.dev";
   const host = "https://cryptlink.abelcode.dev/";
 
   const [url, setUrl] = useState("");

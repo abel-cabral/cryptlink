@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 });
 
 const Descriptar = () => {
-  const api = "https://api.cryptlink.abelcode.dev";
+  const api = "https://cryptlink-api.abelcode.dev";
   const path = window.location.pathname;
   const [link_publico, setUrl] = useState(path.replace("/", ""));
   const [senha, setSenha] = useState("");
