@@ -1,0 +1,42 @@
+name: Build and Push Docker Image
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Usar Node.js
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      # Instalar dependências do projeto
+      - run: npm i
+
+      # Rodar o build do projeto
+      - run: npm run build:web
+
+      # Executar os próximos passos apenas se estiver na branch main
+      - name: Check if on main branch
+        if: github.ref == 'refs/heads/main'
+        run: echo "On main branch"
+
+      # Fazer o build da imagem Docker, mas apenas se estiver na main
+      - name: Build Docker image
+        if: github.ref == 'refs/heads/main'
+        run: docker build -t ozteps/simple-sum:latest .
+
+      # Fazer login no Docker Hub (apenas na branch main)
+      - name: Docker Login
+        if: github.ref == 'refs/heads/main'
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Fazer push da imagem para o Docker Hub (apenas na branch main)
+      - name: Push Docker image
+        if: github.ref == 'refs/heads/main'
+        run: docker push ozteps/simple-sum:latest
