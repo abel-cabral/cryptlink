@@ -4,8 +4,7 @@ import {
   Platform,
   Button,
   StyleSheet,
-  Linking,
-  Clipboard,
+  Linking
 } from "react-native";
 import styled from "styled-components/native";
 import axios from "axios";
@@ -60,9 +59,9 @@ const styles = StyleSheet.create({
 });
 
 const Descriptar = () => {
-  const api = "https://cryptlink-api.abelcode.dev";
+  const api = process.env.API_URL;
   const path = window.location.pathname;
-  const [link_publico, setUrl] = useState(path.replace("/", ""));
+  const [link_publico] = useState(path.replace("/", ""));
   const [senha, setSenha] = useState("");
 
   const handleSubmit = () => {
